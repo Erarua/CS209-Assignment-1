@@ -133,26 +133,34 @@ public class OnlineCoursesAnalyzer {
         List<String> res = new ArrayList<>();
         List<Course> tmp = new ArrayList<>(by.equals("hours")
                 ? courseList.stream().sorted((o1, o2) -> {
-            Double d1 = o1.getTotalHours();
-            Double d2 = o2.getTotalHours();
-            return d2.compareTo(d1);
-        }).toList() :
+                    Double d1 = o1.getTotalHours();
+                    Double d2 = o2.getTotalHours();
+                    return d2.compareTo(d1);
+                }).collect(Collectors.toList()) :
                 courseList.stream().sorted((o1, o2) -> {
                     Integer d1 = o1.getParticipants();
                     Integer d2 = o2.getParticipants();
                     return d2.compareTo(d1);
-                }).toList());
+                }).collect(Collectors.toList()));
         if (by.equals("hours")) {
             tmp.sort((o1, o2) -> {
                 Double d1 = o1.getTotalHours();
                 Double d2 = o2.getTotalHours();
-                return d2.compareTo(d1) != 0 ? d2.compareTo(d1) : o1.getTitle().compareTo(o2.getTitle());
+                return d2.compareTo(d1) != 0
+                        ?
+                        d2.compareTo(d1)
+                        :
+                        o1.getTitle().compareTo(o2.getTitle());
             });
         } else {
             tmp.sort((o1, o2) -> {
                 Integer d1 = o1.getParticipants();
                 Integer d2 = o2.getParticipants();
-                return d2.compareTo(d1) != 0 ? d2.compareTo(d1) : o1.getTitle().compareTo(o2.getTitle());
+                return d2.compareTo(d1) != 0
+                        ?
+                        d2.compareTo(d1)
+                        :
+                        o1.getTitle().compareTo(o2.getTitle());
             });
         }
         int k = 0;
@@ -168,10 +176,14 @@ public class OnlineCoursesAnalyzer {
     }
 
     //5
-    public List<String> searchCourses(String courseSubject, double percentAudited, double totalCourseHours) {
+    public List<String> searchCourses(
+            String courseSubject,
+            double percentAudited,
+            double totalCourseHours) {
         List<String> res = new ArrayList<>();
         courseList.stream()
-                .filter(course -> course.getSubject().toLowerCase().contains(courseSubject.toLowerCase()))
+                .filter(course -> course.getSubject().toLowerCase()
+                        .contains(courseSubject.toLowerCase()))
                 .filter(course -> course.getPercentAudited() >= percentAudited)
                 .filter(course -> course.getTotalHours() <= totalCourseHours)
                 .forEach(course -> {
@@ -200,11 +212,14 @@ public class OnlineCoursesAnalyzer {
             numberTitle.put(s, courses.get(0).getTitle());
         });
         numberAge = courseList.stream().collect(
-                Collectors.groupingBy(Course::getNumber, Collectors.averagingDouble(Course::getMedianAge)));
+                Collectors.groupingBy(Course::getNumber,
+                        Collectors.averagingDouble(Course::getMedianAge)));
         numberMale = courseList.stream().collect(
-                Collectors.groupingBy(Course::getNumber, Collectors.averagingDouble(Course::getPercentMale)));
+                Collectors.groupingBy(Course::getNumber,
+                        Collectors.averagingDouble(Course::getPercentMale)));
         numberBachelor = courseList.stream().collect(
-                Collectors.groupingBy(Course::getNumber, Collectors.averagingDouble(Course::getPercentBachelor)));
+                Collectors.groupingBy(Course::getNumber,
+                        Collectors.averagingDouble(Course::getPercentBachelor)));
         Map<String, Double> finalNumberAge = numberAge;
         Map<String, Double> finalNumberMale = numberMale;
         Map<String, Double> finalNumberBachelor = numberBachelor;
@@ -228,7 +243,7 @@ public class OnlineCoursesAnalyzer {
                 finalRes.add(stringDoubleEntry.getKey());
             }
         });
-        res = finalRes.stream().limit(10).toList();
+        res = finalRes.stream().limit(10).collect(Collectors.toList());
         return res;
     }
 }
@@ -272,14 +287,26 @@ class Course {
         this.institution = institution;
         this.number = number;
         this.launchDate = launchDate;
-        if (title.startsWith("\"")) title = title.substring(1);
-        if (title.endsWith("\"")) title = title.substring(0, title.length() - 1);
+        if (title.startsWith("\"")) {
+            title = title.substring(1);
+        }
+        if (title.endsWith("\"")) {
+            title = title.substring(0, title.length() - 1);
+        }
         this.title = title;
-        if (instructors.startsWith("\"")) instructors = instructors.substring(1);
-        if (instructors.endsWith("\"")) instructors = instructors.substring(0, instructors.length() - 1);
+        if (instructors.startsWith("\"")) {
+            instructors = instructors.substring(1);
+        }
+        if (instructors.endsWith("\"")) {
+            instructors = instructors.substring(0, instructors.length() - 1);
+        }
         this.instructors = instructors;
-        if (subject.startsWith("\"")) subject = subject.substring(1);
-        if (subject.endsWith("\"")) subject = subject.substring(0, subject.length() - 1);
+        if (subject.startsWith("\"")) {
+            subject = subject.substring(1);
+        }
+        if (subject.endsWith("\"")) {
+            subject = subject.substring(0, subject.length() - 1);
+        }
         this.subject = subject;
         this.year = year;
         this.honorCode = honorCode;
@@ -297,7 +324,6 @@ class Course {
         this.medianAge = medianAge;
         this.percentMale = percentMale;
         this.percentFemale = percentFemale;
-//        this.percentDegree = percentDegree;
         this.percentBachelor = percentBachelor;
     }
 
@@ -480,14 +506,6 @@ class Course {
     public void setPercentFemale(double percentFemale) {
         this.percentFemale = percentFemale;
     }
-
-//    public double getPercentDegree() {
-//        return percentDegree;
-//    }
-//
-//    public void setPercentDegree(double percentDegree) {
-//        this.percentDegree = percentDegree;
-//    }
 
     public double getPercentBachelor() {
         return percentBachelor;
